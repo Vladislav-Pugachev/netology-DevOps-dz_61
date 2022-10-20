@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: front
+  name: front
+  namespace: prod
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: front
+  template:
+    metadata:
+      labels:
+        app: front
+    spec:
+      containers:
+      - image: vladpugachev/frontend:0.1
+        ports:
+          - containerPort: 80
+        imagePullPolicy: IfNotPresent
+        name: frontend
+        volumeMounts:
+          - mountPath: "/frontend/static"
+            name: my-volume
+      imagePullSecrets:
+        - name: regcred
+      volumes:
+        - name: my-volume
+          persistentVolumeClaim:
+            claimName: pvc
